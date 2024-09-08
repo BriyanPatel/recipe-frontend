@@ -2,7 +2,6 @@
 import axios from 'axios';
 
 let token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
 const api = axios.create({
   baseURL: 'http://localhost:8000/api/v1', // Replace with your backend URL
 });

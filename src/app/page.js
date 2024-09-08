@@ -1,4 +1,4 @@
-import AuthScreen from "@/app/auth/auth-screen";
+import AuthScreen from "./auth/auth-screen";
 
 
 /**

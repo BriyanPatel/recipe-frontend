@@ -1,18 +1,17 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Loader } from "lucide-react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { useRouter } from 'next/navigation'
-import { Loader } from "lucide-react";
-
+} from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
 
 /**
  * Component to handle user login.
@@ -23,9 +22,9 @@ import { Loader } from "lucide-react";
 const Login = ({ setState }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   /**
    * Handles the login form submission.
@@ -40,35 +39,35 @@ const Login = ({ setState }) => {
    */
   const handleSubmit = async (e) => {
     e.preventDefault(); // prevent the default form submission
-    if(!(email || password)) {
-      setError('Please enter email and password');
+    if (!(email || password)) {
+      setError("Please enter email and password");
       return;
     }
     setLoading(true);
-    setError('');
+    setError("");
 
     // Make API call
     try {
-      const response = await fetch('http://localhost:8000/api/v1/users/login', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8000/api/v1/users/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
 
       // Handle response
       const data = await response.json();
-      if(data.statusCode === 200) {
-        setLoading(false)
-        localStorage.setItem('token', data.data.accessToken);
+      if (data.statusCode === 200) {
+        setLoading(false);
+        localStorage.setItem("token", data.data.accessToken);
         router.push("/dashboard");
       }
     } catch (error) {
       setError(error);
     } finally {
       setLoading(false);
-    }    
+    }
   };
 
   return (
@@ -77,7 +76,6 @@ const Login = ({ setState }) => {
         <CardTitle>Login to continue</CardTitle>
         <CardDescription>Use or email and name to continue</CardDescription>
         <p className="text-red-500">{error}</p>
-
       </CardHeader>
       <CardContent className="space-y-5 px-0 pb-0">
         <form onSubmit={handleSubmit} className="space-y-2.5">
@@ -98,7 +96,7 @@ const Login = ({ setState }) => {
             required
           />
           <Button type="submit" className="w-full" size="lg">
-          {loading ? <Loader className="animate-spin" />: "Login"}
+            {loading ? <Loader className="animate-spin" /> : "Login"}
           </Button>
         </form>
         <p className="text-xs text-muted-foreground">

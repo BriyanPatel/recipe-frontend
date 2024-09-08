@@ -1,10 +1,10 @@
 // pages/search.js
 "use client";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import api from "../../utils/api";
 import RecipeCard from "../recipecard/page";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
 import { Loader } from "lucide-react";
 
 /**
@@ -81,6 +81,8 @@ const Page = () => {
     }
   };
 
+  
+
   /**
    * Handles the favorite button click.
    *
@@ -95,9 +97,9 @@ const Page = () => {
    */
   const handleFavorite = async (recipe) => {
     try {
-      await api.post("/recipes/save", { recipeData: recipe });
+      const data = await api.post("/recipes/save", { recipeData: recipe });
       setLoading(true);
-      setFavorites([...favorites, recipe]);
+      setFavorites([...favorites, data?.data?.data || recipe]);
       alert("Recipe added to favorites");
       setLoading(false);
     } catch (err) {
@@ -106,7 +108,7 @@ const Page = () => {
   };
 
   return (
-    <div>
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
       <form
         onSubmit={handleSearch}
         className="m-4 flex flex-col md:flex-row items-center mb-6 space-y-4 md:space-y-0 md:space-x-4"
@@ -117,20 +119,21 @@ const Page = () => {
           value={ingredient}
           onChange={(e) => setIngredient(e.target.value)}
           required
-          className="flex-1 p-2 border border-gray-300 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          className="flex-1 p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500"
         />
         {loading ? (
-          <Loader className="animate-spin" />
+          <Loader className="animate-spin text-blue-500" />
         ) : (
           <Button
             type="submit"
-            className="w-full md:w-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 transition-colors duration-300 ease-in-out text-white font-bold py-2 px-6 rounded-lg shadow-lg"
           >
             Search
           </Button>
         )}
       </form>
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-red-500 text-center">{error}</p>}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {recipes.length > 0 ? (
           recipes.map((recipe) => (
@@ -144,12 +147,13 @@ const Page = () => {
                 sourceUrl: recipe.sourceUrl || "#",
               }}
               onFavorite={handleFavorite}
+              from="search"
               isFavorite={favorites.some((fav) => fav.title === recipe.title)}
             />
           ))
         ) : (
-          <p className="text-center text-lg text-muted-foreground">
-            No recipes found try search an ingredient
+          <p className="text-center text-lg text-gray-500 dark:text-gray-400">
+            No recipes found, try searching for an ingredient.
           </p>
         )}
       </div>
